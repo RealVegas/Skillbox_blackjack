@@ -123,6 +123,7 @@ def print_scores(get_name, get_cards, get_score):
     print('+{:->43}+'.format('-'))
     print()
 
+
 # Запуск игры
 def start_game(some_names: list[str]) -> None:
     # Играем в 6 колод
@@ -199,6 +200,8 @@ if __name__ == '__main__':
         players: list[str] = [user_name, croupier_name]
     else:
         players: list[str] = [user_name, 'Дилер']
+
+    print('\n', ' {:^43} '.format('Сегодня играм на 6 колодах'))
 
     while True:
         start_game(players)
