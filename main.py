@@ -110,7 +110,7 @@ class Player:
             return False
 
 
-# Игра
+# Таблица карт
 def print_scores(get_name, get_cards, get_score):
     print('\n+{:->43}+'.format('-'))
     print('|{:^43}|'.format(get_name))
@@ -123,13 +123,16 @@ def print_scores(get_name, get_cards, get_score):
     print('+{:->43}+'.format('-'))
     print()
 
+# Запуск игры
+def start_game(some_names: list[str]) -> None:
+    # Играем в 6 колод
+    formed_shoe: CardShoe = CardShoe()
 
-def start_game(player_name: str, dealer_name: str = 'Дилер') -> None:
-    # Изменяем количество колод на 6
-    formed_shoe: CardShoe = CardShoe(deck_count=6)
+    player_name = some_names[0]
+    dealer_name = some_names[1]
 
-    dealer: Player = Player(dealer_name, formed_shoe)
     player: Player = Player(player_name, formed_shoe)
+    dealer: Player = Player(dealer_name, formed_shoe)
 
     player.ace_downgrade()
 
@@ -161,22 +164,25 @@ def start_game(player_name: str, dealer_name: str = 'Дилер') -> None:
     print_scores(player.get_name(), player_cards, player_score)
     print_scores(dealer.get_name(), dealer_cards, dealer_score)
 
-    if player_score == dealer_score:
-        print(f'Ничья, но {player.get_name()} забрал выигрыш до того как Крупье открыл вторую карту | Выигрыш 1 к 1')
-    elif player.is_blackjack() and dealer.is_blackjack():
+    if player.is_blackjack() and dealer.is_blackjack():
         print(f'Ничья, но {player.get_name()} забрал выигрыш до того как Крупье открыл вторую карту | Выигрыш 1 к 1')
     elif player.is_blackjack() and not dealer.is_blackjack():
         print(f'{player.get_name()} выиграл | Выигрыш 3 к 2')
     elif not player.is_blackjack() and dealer.is_blackjack():
         print(f'{player.get_name()} проиграл')
+
     elif 21 >= player_score > dealer_score:
         print(f'{player.get_name()} выиграл | Выигрыш 1 к 1')
     elif player_score <= 21 < dealer_score:
         print(f'{player.get_name()} выиграл | Выигрыш 1 к 1')
+
     elif 21 >= dealer_score > player_score:
         print(f'{player.get_name()} проиграл')
     elif dealer_score <= 21 < player_score:
         print(f'{player.get_name()} проиграл')
+
+    elif player_score == dealer_score:
+        print('Ничья - менее 21 у обоих ')
     elif player_score > 21 and dealer_score > 21:
         print('Ничья - перебор у обоих')
 
@@ -190,19 +196,15 @@ if __name__ == '__main__':
             break
 
     if croupier_name:
-        start_game(user_name, croupier_name)
+        players: list[str] = [user_name, croupier_name]
     else:
-        start_game(user_name)
+        players: list[str] = [user_name, 'Дилер']
 
     while True:
+        start_game(players)
         game_ask: str = input('Хотите сыграть еще раз? (да/нет): ').lower()
 
-        if game_ask == 'да' or game_ask == 'yes':
-            if croupier_name:
-                start_game(user_name, croupier_name)
-            else:
-                start_game(user_name)
-        else:
+        if game_ask == 'нет' or game_ask == 'no':
             break
 
-    input('Для закрытия окна программы нажмите Enter')
+    input('\nДля закрытия окна программы нажмите Enter')
